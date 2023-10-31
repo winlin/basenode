@@ -14,7 +14,10 @@ services:
       # select your network here:
 #      - .env.goerli
 #      - .env.sepolia
-#      - .env.mainnet
+      - .env.mainnet
+    volumes:
+      - /data/base/data:/data:rw
+
   node:
     build: .
     depends_on:
@@ -30,4 +33,6 @@ services:
       # select your network here:
 #      - .env.goerli
 #      - .env.sepolia
-#      - .env.mainnet
+      - .env.mainnet
+    volumes:
+      - /data/base/data:/data:rw
