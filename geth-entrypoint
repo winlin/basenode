@@ -41,7 +41,7 @@ exec ./geth \
     --http.vhosts="*" \
     --http.addr=0.0.0.0 \
     --http.port="$RPC_PORT" \
-    --http.api=web3,debug,eth,net,engine \
+    --http.api=web3,debug,eth,net,engine,txpool \
     --authrpc.addr=0.0.0.0 \
     --authrpc.port="$AUTHRPC_PORT" \
     --authrpc.vhosts="*" \
@@ -50,7 +50,7 @@ exec ./geth \
     --ws.addr=0.0.0.0 \
     --ws.port="$WS_PORT" \
     --ws.origins="*" \
-    --ws.api=debug,eth,net,engine \
+    --ws.api=debug,eth,net,engine,txpool \
     --metrics \
     --metrics.addr=0.0.0.0 \
     --metrics.port="$METRICS_PORT" \
