@@ -9,7 +9,7 @@ AUTHRPC_PORT="${AUTHRPC_PORT:-8551}"
 METRICS_PORT="${METRICS_PORT:-6060}"
 HOST_IP="0.0.0.0"
 P2P_PORT="${P2P_PORT:-30303}"
-ADDITIONAL_ARGS=""
+ADDITIONAL_ARGS="--datadir.minfreedisk 0 --history.transactions 23500 --cache 8192"
 OP_GETH_GCMODE="${OP_GETH_GCMODE:-archive}"
 
 if [[ -z "$OP_NODE_NETWORK" ]]; then
