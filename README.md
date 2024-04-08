@@ -20,7 +20,7 @@ This repository contains the relevant Docker builds to run your own node on the 
 [![Blog](https://img.shields.io/badge/blog-up-green)](https://base.mirror.xyz/)
 [![Docs](https://img.shields.io/badge/docs-up-green)](https://docs.base.org/)
 [![Discord](https://img.shields.io/discord/1067165013397213286?label=discord)](https://base.org/discord)
-[![Twitter BuildOnBase](https://img.shields.io/twitter/follow/BuildOnBase?style=social)](https://twitter.com/BuildOnBase)
+[![Twitter Base](https://img.shields.io/twitter/follow/Base?style=social)](https://twitter.com/Base)
 
 <!-- Badge row 3 - detailed status -->
 
@@ -29,10 +29,11 @@ This repository contains the relevant Docker builds to run your own node on the 
 
 ### Hardware requirements
 
-We recommend you have this configuration to run a node:
+We recommend you have this hardware configuration to run a node:
 
-- at least 16 GB RAM
-- an SSD drive with at least 2 TB free
+- a modern multi-core CPU with good single-core performance
+- at least 16 GB RAM (32 GB recommended)
+- a high performance SSD drive with at least 4 TB free (NVME recommended)
 
 ### Troubleshooting
 
@@ -45,14 +46,13 @@ If you encounter problems with your node, please open a [GitHub issue](https://g
 
 | Ethereum Network | Status |
 |------------------| ------ |
-| Goerli testnet   | ✅     |
 | Sepolia testnet  | ✅     |
 | Mainnet          | ✅     |
 
 ### Usage
 
 1. Ensure you have an Ethereum L1 full node RPC available (not Base), and set `OP_NODE_L1_ETH_RPC` (in the `.env.*` file if using docker-compose). If running your own L1 node, it needs to be synced before Base will be able to fully sync.
-2. Uncomment the line relevant to your network (`.env.goerli`, `.env.sepolia`, or `.env.mainnet`) under the 2 `env_file` keys in `docker-compose.yml`.
+2. Uncomment the line relevant to your network (`.env.sepolia`, or `.env.mainnet`) under the 2 `env_file` keys in `docker-compose.yml`.
 3. Run:
 
 ```
@@ -68,17 +68,13 @@ curl -d '{"id":0,"jsonrpc":"2.0","method":"eth_getBlockByNumber","params":["late
 
 Note: Some L1 nodes (e.g. Erigon) do not support fetching storage proofs. You can work around this by specifying `--l1.trustrpc` when starting op-node (add it in `op-node-entrypoint` and rebuild the docker image with `docker compose build`.) Do not do this unless you fully trust the L1 node provider.
 
-5. Map a local data directory for `op-geth` by adding a volume mapping to the `docker-compose.yaml`:
 
-```yaml
-services:
-  geth: # this is Optimism's geth client
-    ...
-    volumes:
-      - $HOME/data/base:/data
-```
+#### Persisting Data
 
-This is where your node data will be stored. This is for example where you would extract your [snapshot](#snapshots) to.
+By default, the data directory is stored in `${PROJECT_ROOT}/geth-data`. You can override this by modifying the value of
+`GETH_HOST_DATA_DIR` variable in the [`.env`](./.env) file.
+
+To load a [snapshot](#snapshots) you can extract the snapshot into the `$GETH_HOST_DATA_DIR` folder.
 
 #### Running in single container with `supervisord`
 
@@ -88,7 +84,7 @@ This is useful for running the node in a Kubernetes cluster, for example.
 Note that you'll need to override some of the default configuration that assumes a multi-container environment (`OP_NODE_L2_ENGINE_RPC`) and any port conflicts (`OP_NODE_RPC_PORT`).
 Example:
 ```
-docker run --env-file .env.goerli -e OP_NODE_L2_ENGINE_RPC=ws://localhost:8551 -e OP_NODE_RPC_PORT=7545 ghcr.io/base-org/node:latest
+docker run --env-file .env.sepolia -e OP_NODE_L2_ENGINE_RPC=ws://localhost:8551 -e OP_NODE_RPC_PORT=7545 ghcr.io/base-org/node:latest
 ```
 
 ### Snapshots

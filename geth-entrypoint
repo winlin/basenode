@@ -10,7 +10,9 @@ METRICS_PORT="${METRICS_PORT:-6060}"
 HOST_IP="0.0.0.0"
 P2P_PORT="${P2P_PORT:-30303}"
 ADDITIONAL_ARGS="--datadir.minfreedisk 0 --history.transactions 23500 --cache 8192"
-OP_GETH_GCMODE="${OP_GETH_GCMODE:-archive}"
+OP_GETH_GCMODE="${OP_GETH_GCMODE:-full}"
+OP_GETH_SYNCMODE="${OP_GETH_SYNCMODE:-full}"
+
 
 if [[ -z "$OP_NODE_NETWORK" ]]; then
     echo "expected OP_NODE_NETWORK to be set" 1>&2
@@ -33,6 +35,10 @@ if [ "${OP_GETH_STATE_SCHEME+x}" = x ]; then
     ADDITIONAL_ARGS="$ADDITIONAL_ARGS --state.scheme=$OP_GETH_STATE_SCHEME"
 fi
 
+if [ "${OP_GETH_BOOTNODES+x}" = x ]; then
+    ADDITIONAL_ARGS="$ADDITIONAL_ARGS --bootnodes=$OP_GETH_BOOTNODES"
+fi
+
 exec ./geth \
     --datadir="$GETH_DATA_DIR" \
     --verbosity="$VERBOSITY" \
@@ -51,10 +57,7 @@ exec ./geth \
     --ws.port="$WS_PORT" \
     --ws.origins="*" \
     --ws.api=debug,eth,net,engine,txpool \
-    --metrics \
-    --metrics.addr=0.0.0.0 \
-    --metrics.port="$METRICS_PORT" \
-    --syncmode=full \
+    --syncmode="$OP_GETH_SYNCMODE" \
     --gcmode="$OP_GETH_GCMODE" \
     --maxpeers=300 \
     --nat=extip:$HOST_IP \
@@ -62,4 +65,5 @@ exec ./geth \
     --rollup.halt=major \
     --op-network="$OP_NODE_NETWORK" \
     --port="$P2P_PORT" \
+    --rollup.disabletxpoolgossip=true \
     $ADDITIONAL_ARGS # intentionally unquoted

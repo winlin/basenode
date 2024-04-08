@@ -1,27 +1,27 @@
-FROM golang:1.20 as op
+FROM golang:1.21 as op
 
 WORKDIR /app
 
 ENV REPO=https://github.com/ethereum-optimism/optimism.git
-ENV VERSION=v1.4.1
+ENV VERSION=v1.7.1
 # for verification:
-ENV COMMIT=54a7dbf8aa9b982f9c6a54cbbe448be41c0b7bc7
+ENV COMMIT=c87a469d7d679e8a4efbace56c3646b925bcc009
 
 RUN git clone $REPO --branch op-node/$VERSION --single-branch . && \
     git switch -c branch-$VERSION && \
     bash -c '[ "$(git rev-parse HEAD)" = "$COMMIT" ]'
 
 RUN cd op-node && \
-    make op-node
+    make VERSION=$VERSION op-node
 
-FROM golang:1.20 as geth
+FROM golang:1.21 as geth
 
 WORKDIR /app
 
 ENV REPO=https://github.com/ethereum-optimism/op-geth.git
-ENV VERSION=v1.101304.2
+ENV VERSION=v1.101308.2
 # for verification:
-ENV COMMIT=c6b416da212fe6713ff40b8092303d0035405a47
+ENV COMMIT=0402d543c3d0cff3a3d344c0f4f83809edb44f10
 
 # avoid depth=1, so the geth build can read tags
 RUN git clone $REPO --branch $VERSION --single-branch . && \
@@ -30,7 +30,7 @@ RUN git clone $REPO --branch $VERSION --single-branch . && \
 
 RUN go run build/ci.go install -static ./cmd/geth
 
-FROM golang:1.20
+FROM golang:1.21
 
 RUN apt-get update && \
     apt-get install -y jq curl supervisor && \
@@ -44,7 +44,6 @@ COPY --from=geth /app/build/bin/geth ./
 COPY supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 COPY geth-entrypoint .
 COPY op-node-entrypoint .
-COPY goerli ./goerli
 COPY sepolia ./sepolia
 COPY mainnet ./mainnet
 
