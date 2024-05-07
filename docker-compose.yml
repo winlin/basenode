@@ -15,7 +15,7 @@ services:
 #      - .env.sepolia
       - .env.mainnet
     volumes:
-      - /data/base/data:/data:rw
+      - ${GETH_HOST_DATA_DIR}:/data:rw
 
   node:
     build: .
@@ -33,4 +33,4 @@ services:
 #      - .env.sepolia
       - .env.mainnet
     volumes:
-      - /data/base/data:/data:rw
+      - ${GETH_HOST_DATA_DIR}:/data:rw
