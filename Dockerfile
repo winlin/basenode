@@ -1,4 +1,4 @@
-FROM golang:1.21 as op
+FROM golang:1.22.3 as op
 
 WORKDIR /app
 
@@ -14,14 +14,14 @@ RUN git clone $REPO --branch op-node/$VERSION --single-branch . && \
 RUN cd op-node && \
     make VERSION=$VERSION op-node
 
-FROM golang:1.21 as geth
+FROM golang:1.22.3 as geth
 
 WORKDIR /app
 
 ENV REPO=https://github.com/ethereum-optimism/op-geth.git
-ENV VERSION=v1.101311.0
+ENV VERSION=v1.101315.0
 # for verification:
-ENV COMMIT=e9a306bafb0bde2c154c5d2a21018592b7207427
+ENV COMMIT=ef178f2555afc821a0a522db1f24f06ddab80f3c
 
 # avoid depth=1, so the geth build can read tags
 RUN git clone $REPO --branch $VERSION --single-branch . && \
@@ -30,7 +30,7 @@ RUN git clone $REPO --branch $VERSION --single-branch . && \
 
 RUN go run build/ci.go install -static ./cmd/geth
 
-FROM golang:1.21
+FROM golang:1.22.3
 
 RUN apt-get update && \
     apt-get install -y jq curl supervisor && \
