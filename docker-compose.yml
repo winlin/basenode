@@ -4,11 +4,11 @@ services:
       context: .
       dockerfile: ${CLIENT}/Dockerfile
     ports:
-      - "8545:8545"       # RPC
-      - "8546:8546"       # websocket
-      - "7301:6060"       # metrics
-      - "30303:30303"     # P2P TCP
-      - "30303:30303/udp" # P2P UDP
+      - 8545:8545       # RPC
+      - 8546:8546       # websocket
+      - 30303:30303     # P2P TCP (currently unused)
+      - 30303:30303/udp # P2P UDP (currently unused)
+      #- 7301:6060       # metrics
     command: [ "bash", "./execution-entrypoint" ]
     env_file:
       # select your network here:
