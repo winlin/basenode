@@ -9,21 +9,29 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        arch: [ linux/amd64, linux/arm64 ]
+        arch: [linux/amd64]
     steps:
       - name: Checkout
         uses: actions/checkout@v3
         with:
           ref: ${{ github.event.pull_request.head.sha }}
+
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v2
+        with:
+          platforms: ${{ matrix.arch }}
+
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
+
       - name: Build the Docker image
-        uses: docker/build-push-action@v4
+        uses: docker/build-push-action@v6
         with:
           context: .
           file: geth/Dockerfile
           push: false
           platforms: ${{ matrix.arch }}
+
   reth:
     runs-on: ubuntu-latest
     strategy:
@@ -39,7 +47,7 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
       - name: Build the Docker image
-        uses: docker/build-push-action@v4
+        uses: docker/build-push-action@v6
         with:
           context: .
           file: reth/Dockerfile
@@ -47,11 +55,12 @@ jobs:
           build-args: |
             FEATURES=${{ matrix.features }}
           platforms: ${{ matrix.arch }}
+
   nethermind:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        arch: [ linux/amd64 ]
+        arch: [linux/amd64]
     steps:
       - name: Checkout
         uses: actions/checkout@v3
@@ -60,10 +69,9 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
       - name: Build the Docker image
-        uses: docker/build-push-action@v6
+        uses: docker/build-push-action@v4
         with:
           context: .
           file: nethermind/Dockerfile
           push: false
           platforms: ${{ matrix.arch }}
-
