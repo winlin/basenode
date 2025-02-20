@@ -24,8 +24,8 @@ RUN apt-get update && \
     build-essential
 
 ENV REPO=https://github.com/winlin/op-geth.git
-ENV VERSION=v1.101500.0.1
-ENV COMMIT=a4a185096ffe0e8946a4178b3be3c4dc9e7b5c28
+ENV VERSION=v1.101500.0.2
+ENV COMMIT=c78443a3e1a9df2edb2f66dd991a148539199c13
 
 RUN git clone $REPO --branch $VERSION --single-branch . && \
     git switch -c branch-$VERSION && \
