@@ -3,8 +3,8 @@ FROM golang:1.22 AS op
 WORKDIR /app
 
 ENV REPO=https://github.com/ethereum-optimism/optimism.git
-ENV VERSION=v1.11.1
-ENV COMMIT=443e931f242e1595896d6598b02068dc822e1232
+ENV VERSION=v1.13.0
+ENV COMMIT=5f003211aed7469eed7df666291a62c025d1c46c
 RUN git clone $REPO --branch op-node/$VERSION --single-branch . && \
     git switch -c branch-$VERSION && \
     bash -c '[ "$(git rev-parse HEAD)" = "$COMMIT" ]'
@@ -24,8 +24,8 @@ RUN apt-get update && \
     build-essential
 
 ENV REPO=https://github.com/winlin/op-geth.git
-ENV VERSION=v1.101500.0.2
-ENV COMMIT=c78443a3e1a9df2edb2f66dd991a148539199c13
+ENV VERSION=v1.101503.2.1
+ENV COMMIT=3a978df99e9107fea028d3e51cd21ba3946414e7
 
 RUN git clone $REPO --branch $VERSION --single-branch . && \
     git switch -c branch-$VERSION && \
